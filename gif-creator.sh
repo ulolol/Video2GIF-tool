@@ -40,8 +40,11 @@ if ! command -v ffprobe &> /dev/null; then
     exit 1
 fi
 
-if ! command -v gifsicle &> /dev/null; then
+if command -v gifsicle &> /dev/null; then
+    GIFSICLE_AVAILABLE=true
+else
     echo "Warning: 'gifsicle' is not installed. GIF optimization will be skipped. Install 'gifsicle' for smaller output files." >&2
+    GIFSICLE_AVAILABLE=false
 fi
 
 
@@ -183,6 +186,11 @@ printf "⏳  Converting video to optimized GIF...
 "
 ffmpeg -y -i "$VIDEO_FILE" -vf "fps=$FPS,scale=$WIDTH:$HEIGHT:flags=lanczos,palettegen" "$TEMP_PALETTE_FILE" && \
     ffmpeg -y -i "$VIDEO_FILE" -i "$TEMP_PALETTE_FILE" -filter_complex "fps=$FPS,scale=$WIDTH:$HEIGHT:flags=lanczos[x];[x][1:v]paletteuse" "$OUTPUT_GIF"
+
+if $GIFSICLE_AVAILABLE; then
+    printf "⏳  Optimizing GIF with gifsicle...\n"
+    gifsicle -O3 "$OUTPUT_GIF" -o "$OUTPUT_GIF"
+fi
 
 printf "\n✅  Success! High-quality GIF created at:\n"
 printf "   -> %s\n\n" "$OUTPUT_GIF"
