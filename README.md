@@ -1,5 +1,9 @@
 # Video to GIF Creator TUI
 
+<p align="center">
+<img src="Video2GIF-tool_logo.gif" alt="Logo" width="300"/>
+</p>
+
 This project contains a simple BASH-based Text User Interface (TUI) to create high-quality GIFs from video files.
 
 It's designed for developers who want a quick way to generate GIFs for embedding in GitHub READMEs or other web documentation.
